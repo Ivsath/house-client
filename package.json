@@ -43,8 +43,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint . --ignore-pattern node_modules/ --ext .ts,.tsx --quiet --fix",
-    "codegen:schema": "npx apollo client:download-schema --endpoint=http://localhost:9000/api",
-    "codegen:generate": "npx apollo client:codegen --localSchemaFile=schema.json --includes=src/**/*.tsx --target=typescript"
+    "codegen:schema": "npx apollo client:download-schema --endpoint=http://localhost:9090/api",
+    "codegen:generate": "npx apollo client:codegen --localSchemaFile=schema.json --includes=src/**/*.ts --globalTypesFile=./src/lib/graphql/globalTypes.ts --target=typescript"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -61,7 +61,7 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:9000",
+  "proxy": "http://localhost:9090",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
