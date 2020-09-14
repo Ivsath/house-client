@@ -92,7 +92,7 @@ export const Login = ({ setViewer }: Props) => {
             </span>
           </Title>
           <Title level={3} className="log-in-card__intro-title">
-            Log in to TinyHouse!
+            Log in to House!
           </Title>
           <Text>Sign in with Google to start booking available rentals!</Text>
         </div>
