@@ -1,6 +1,6 @@
 import "./styles/index.css";
 
-import { Layout } from "antd";
+import { Affix, Layout } from "antd";
 import ApolloClient from "apollo-boost";
 import React, { useState } from "react";
 import { ApolloProvider } from "react-apollo";
@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import { Viewer } from "./lib/types";
 import {
+  AppHeader,
   Home,
   Host,
   Listing,
@@ -37,6 +38,9 @@ const App = () => {
   return (
     <Router>
       <Layout id="app">
+        <Affix offsetTop={0} className="app__affix-header">
+          <AppHeader />
+        </Affix>
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/host" component={Host} />
