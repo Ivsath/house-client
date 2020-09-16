@@ -1,10 +1,9 @@
 import "./styles/index.css";
 
-import { useMutation } from "@apollo/react-hooks";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { Affix, Layout, Spin } from "antd";
-import ApolloClient from "apollo-boost";
 import React, { useEffect, useRef, useState } from "react";
-import { ApolloProvider } from "react-apollo";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
@@ -29,6 +28,7 @@ import * as serviceWorker from "./serviceWorker";
 
 const client = new ApolloClient({
   uri: "/api",
+  cache: new InMemoryCache(),
 });
 
 const initialViewer: Viewer = {

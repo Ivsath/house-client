@@ -1,4 +1,4 @@
-import { useApolloClient, useMutation } from "@apollo/react-hooks";
+import { useApolloClient, useMutation } from "@apollo/client";
 import { Card, Layout, Spin, Typography } from "antd";
 import React, { useEffect, useRef } from "react";
 import { Redirect } from "react-router-dom";

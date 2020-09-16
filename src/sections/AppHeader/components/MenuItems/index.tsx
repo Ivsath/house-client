@@ -1,5 +1,5 @@
 import { HomeOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/client";
 import { Avatar, Button, Menu } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
