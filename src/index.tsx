@@ -32,7 +32,7 @@ import {
 } from "./sections";
 import * as serviceWorker from "./serviceWorker";
 
-const httpLink = new HttpLink({ uri: "/api" });
+const httpLink = new HttpLink({ uri: "/api", credentials: "same-origin" });
 
 const tokenLink = setContext((_, { headers }) => {
   const token = sessionStorage.getItem("token");
