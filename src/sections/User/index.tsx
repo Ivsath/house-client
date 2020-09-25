@@ -3,6 +3,7 @@ import { Col, Layout, Row } from "antd";
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 
+import { ErrorBanner, PageSkeleton } from "../../lib/components";
 import { USER } from "../../lib/graphql/queries";
 import {
   User as UserData,
@@ -30,6 +31,23 @@ export const User = ({
       id: match.params.id,
     },
   });
+
+  if (loading) {
+    return (
+      <Content className="user">
+        <PageSkeleton />
+      </Content>
+    );
+  }
+
+  if (error) {
+    return (
+      <Content className="user">
+        <ErrorBanner description="This user may not exist or we've encountered an error. Please try again soon." />
+        <PageSkeleton />
+      </Content>
+    );
+  }
 
   const user = data ? data.user : null;
   const viewerIsUser = viewer.id === match.params.id;
