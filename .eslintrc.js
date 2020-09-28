@@ -42,6 +42,7 @@ module.exports = {
     "no-console": 1,
     "react-hooks/rules-of-hooks": 2,
     "react-hooks/exhaustive-deps": 2,
+    "react/no-unescaped-entities": "off",
     "simple-import-sort/sort": "error",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
