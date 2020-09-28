@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Col, Layout, Row } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
 import { ErrorBanner, PageSkeleton } from "../../lib/components";
@@ -10,7 +10,7 @@ import {
   UserVariables,
 } from "../../lib/graphql/queries/User/__generated__/User";
 import { Viewer } from "../../lib/types";
-import { UserProfile } from "./components";
+import { UserBookings, UserListings, UserProfile } from "./components";
 
 interface Props {
   viewer: Viewer;
@@ -21,14 +21,21 @@ interface MatchParams {
 }
 
 const { Content } = Layout;
+const PAGE_LIMIT = 4;
 
 export const User = ({
   viewer,
   match,
 }: Props & RouteComponentProps<MatchParams>) => {
+  const [listingsPage, setListingsPage] = useState(1);
+  const [bookingsPage, setBookingsPage] = useState(1);
+
   const { data, loading, error } = useQuery<UserData, UserVariables>(USER, {
     variables: {
       id: match.params.id,
+      bookingsPage,
+      listingsPage,
+      limit: PAGE_LIMIT,
     },
   });
 
@@ -52,6 +59,27 @@ export const User = ({
   const user = data ? data.user : null;
   const viewerIsUser = viewer.id === match.params.id;
 
+  const userListings = user ? user.listings : null;
+  const userBookings = user ? user.bookings : null;
+
+  const userListingsElement = userListings ? (
+    <UserListings
+      userListings={userListings}
+      listingsPage={listingsPage}
+      limit={PAGE_LIMIT}
+      setListingsPage={setListingsPage}
+    />
+  ) : null;
+
+  const userBookingsElement = userBookings ? (
+    <UserBookings
+      userBookings={userBookings}
+      bookingsPage={bookingsPage}
+      limit={PAGE_LIMIT}
+      setBookingsPage={setBookingsPage}
+    />
+  ) : null;
+
   const userProfileElement = user ? (
     <UserProfile user={user} viewerIsUser={viewerIsUser} />
   ) : null;
@@ -60,6 +88,10 @@ export const User = ({
     <Content className="user">
       <Row gutter={12} justify="space-between">
         <Col xs={24}>{userProfileElement}</Col>
+        <Col xs={24}>
+          {userListingsElement}
+          {userBookingsElement}
+        </Col>
       </Row>
     </Content>
   );
