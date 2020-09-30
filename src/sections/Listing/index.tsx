@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Col, Layout, Row } from "antd";
+import { Dayjs } from "dayjs";
 import React, { useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
@@ -24,6 +25,8 @@ const PAGE_LIMIT = 3;
 
 export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
   const [bookingsPage, setBookingsPage] = useState(1);
+  const [checkInDate, setCheckInDate] = useState<Dayjs | null>(null);
+  const [checkOutDate, setCheckOutDate] = useState<Dayjs | null>(null);
 
   const { loading, data, error } = useQuery<ListingData, ListingVariables>(
     LISTING,
@@ -69,7 +72,15 @@ export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
     />
   ) : null;
 
-  const listingCreateBooking = <ListingCreateBooking />;
+  const listingCreateBooking = listing ? (
+    <ListingCreateBooking
+      price={listing.price}
+      checkInDate={checkInDate}
+      checkOutDate={checkOutDate}
+      setCheckInDate={setCheckInDate}
+      setCheckOutDate={setCheckOutDate}
+    />
+  ) : null;
 
   return (
     <Content className="listings">
