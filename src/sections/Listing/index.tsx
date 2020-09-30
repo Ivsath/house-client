@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Layout } from "antd";
+import { Col, Layout, Row } from "antd";
 import React, { useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
@@ -9,6 +9,7 @@ import {
   Listing as ListingData,
   ListingVariables,
 } from "../../lib/graphql/queries/Listing/__generated__/Listing";
+import { ListingDetails } from "./components";
 
 interface MatchParams {
   id: string;
@@ -51,5 +52,17 @@ export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
   const listing = data ? data.listing : null;
   const listingBookings = listing ? listing.bookings : null;
 
-  return <h2>Listing</h2>;
+  const listingDetailsElement = listing ? (
+    <ListingDetails listing={listing} />
+  ) : null;
+
+  return (
+    <Content className="listings">
+      <Row gutter={24} justify="space-between">
+        <Col xs={24} lg={14}>
+          {listingDetailsElement}
+        </Col>
+      </Row>
+    </Content>
+  );
 };
