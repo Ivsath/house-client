@@ -44,11 +44,11 @@ export const HomeHero = () => {
             </Card>
           </Link>
         </Col>
-        <Link to="/listings/london">
-          <Col xs={0} md={6}>
+        <Col xs={0} md={6}>
+          <Link to="/listings/london">
             <Card cover={<img alt="london" src={londonImage} />}>London</Card>
-          </Col>
-        </Link>
+          </Link>
+        </Col>
       </Row>
     </div>
   );
