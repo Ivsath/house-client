@@ -13,7 +13,7 @@ import { displayErrorMessage } from "../../lib/utils";
 import cancunImage from "./assets/cancun.jpg";
 import mapBackground from "./assets/map-background.jpg";
 import sanFranciscoImage from "./assets/san-francisco.jpg";
-import { HomeHero, HomeListings } from "./components";
+import { HomeHero, HomeListings, HomeListingsSkeleton } from "./components";
 
 const { Content } = Layout;
 const { Paragraph, Title } = Typography;
@@ -45,7 +45,7 @@ export const Home = ({ history }: RouteComponentProps) => {
 
   const renderListingsSection = () => {
     if (loading) {
-      return "Loading..";
+      return <HomeListingsSkeleton />;
     }
 
     if (data) {
