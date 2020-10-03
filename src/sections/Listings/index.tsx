@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { Layout, List } from "antd";
 import React from "react";
+import { RouteComponentProps } from "react-router-dom";
 
 import { ListingCard } from "../../lib/components";
 import { ListingsFilter } from "../../lib/graphql/globalTypes";
@@ -10,12 +11,17 @@ import {
   ListingsVariables,
 } from "../../lib/graphql/queries/Listings/__generated__/Listings";
 
+interface MatchParams {
+  location: string;
+}
+
 const { Content } = Layout;
 const PAGE_LIMIT = 8;
 
-export const Listings = () => {
+export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
   const { data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
     variables: {
+      location: match.params.location,
       filter: ListingsFilter.PRICE_LOW_TO_HIGH,
       limit: PAGE_LIMIT,
       page: 1,
