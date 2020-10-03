@@ -10,7 +10,11 @@ import {
   Listings as ListingsData,
   ListingsVariables,
 } from "../../lib/graphql/queries/Listings/__generated__/Listings";
-import { ListingsFilters, ListingsPagination } from "./components";
+import {
+  ListingsFilters,
+  ListingsPagination,
+  ListingsSkeleton,
+} from "./components";
 
 interface MatchParams {
   location: string;
@@ -24,14 +28,25 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
   const [filter, setFilter] = useState(ListingsFilter.PRICE_LOW_TO_HIGH);
   const [page, setPage] = useState(1);
 
-  const { data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
-    variables: {
-      location: match.params.location,
-      filter,
-      limit: PAGE_LIMIT,
-      page,
+  const { loading, data } = useQuery<ListingsData, ListingsVariables>(
+    LISTINGS,
+    {
+      variables: {
+        location: match.params.location,
+        filter,
+        limit: PAGE_LIMIT,
+        page,
+      },
     },
-  });
+  );
+
+  if (loading) {
+    return (
+      <Content className="listings">
+        <ListingsSkeleton />;
+      </Content>
+    );
+  }
 
   const listings = data ? data.listings : null;
   const listingsRegion = listings ? listings.region : null;
