@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Layout, List, Typography } from "antd";
+import { Affix, Layout, List, Typography } from "antd";
 import React, { useState } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 
@@ -39,13 +39,15 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
   const listingsSectionElement =
     listings && listings.result.length ? (
       <>
-        <ListingsPagination
-          total={listings.total}
-          page={page}
-          limit={PAGE_LIMIT}
-          setPage={setPage}
-        />
-        <ListingsFilters filter={filter} setFilter={setFilter} />
+        <Affix offsetTop={64}>
+          <ListingsPagination
+            total={listings.total}
+            page={page}
+            limit={PAGE_LIMIT}
+            setPage={setPage}
+          />
+          <ListingsFilters filter={filter} setFilter={setFilter} />
+        </Affix>
         <List
           grid={{
             gutter: 8,
