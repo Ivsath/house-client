@@ -3,7 +3,7 @@ import { Affix, Layout, List, Typography } from "antd";
 import React, { useState } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 
-import { ListingCard } from "../../lib/components";
+import { ErrorBanner, ListingCard } from "../../lib/components";
 import { ListingsFilter } from "../../lib/graphql/globalTypes";
 import { LISTINGS } from "../../lib/graphql/queries";
 import {
@@ -28,7 +28,7 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
   const [filter, setFilter] = useState(ListingsFilter.PRICE_LOW_TO_HIGH);
   const [page, setPage] = useState(1);
 
-  const { loading, data } = useQuery<ListingsData, ListingsVariables>(
+  const { loading, data, error } = useQuery<ListingsData, ListingsVariables>(
     LISTINGS,
     {
       variables: {
@@ -43,6 +43,20 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
   if (loading) {
     return (
       <Content className="listings">
+        <ListingsSkeleton />
+      </Content>
+    );
+  }
+
+  if (error) {
+    return (
+      <Content className="listings">
+        <ErrorBanner
+          description={`
+            We either couldn't find anything matching your search or have encountered an error.
+            If you're searching for a unique location, try searching again with more common keywords.
+          `}
+        />
         <ListingsSkeleton />
       </Content>
     );
