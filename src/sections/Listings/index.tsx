@@ -10,7 +10,7 @@ import {
   Listings as ListingsData,
   ListingsVariables,
 } from "../../lib/graphql/queries/Listings/__generated__/Listings";
-import { ListingsFilters } from "./components";
+import { ListingsFilters, ListingsPagination } from "./components";
 
 interface MatchParams {
   location: string;
@@ -22,12 +22,14 @@ const PAGE_LIMIT = 8;
 
 export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
   const [filter, setFilter] = useState(ListingsFilter.PRICE_LOW_TO_HIGH);
+  const [page, setPage] = useState(1);
+
   const { data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
     variables: {
       location: match.params.location,
       filter,
       limit: PAGE_LIMIT,
-      page: 1,
+      page,
     },
   });
 
@@ -37,6 +39,12 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
   const listingsSectionElement =
     listings && listings.result.length ? (
       <>
+        <ListingsPagination
+          total={listings.total}
+          page={page}
+          limit={PAGE_LIMIT}
+          setPage={setPage}
+        />
         <ListingsFilters filter={filter} setFilter={setFilter} />
         <List
           grid={{
