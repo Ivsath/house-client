@@ -29,6 +29,8 @@ export const UserBookings = ({
         xs: 1,
         sm: 2,
         lg: 4,
+        xl: 4,
+        xxl: 4,
       }}
       dataSource={result ? result : undefined}
       locale={{ emptyText: "You haven't made any bookings!" }}

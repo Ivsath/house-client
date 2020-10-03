@@ -85,6 +85,8 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
             xs: 1,
             sm: 2,
             lg: 4,
+            xl: 4,
+            xxl: 4,
           }}
           dataSource={listings.result}
           renderItem={(listing) => (
