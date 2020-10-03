@@ -43,7 +43,7 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
   if (loading) {
     return (
       <Content className="listings">
-        <ListingsSkeleton />;
+        <ListingsSkeleton />
       </Content>
     );
   }
@@ -53,15 +53,17 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
 
   const listingsSectionElement =
     listings && listings.result.length ? (
-      <>
+      <div>
         <Affix offsetTop={64}>
-          <ListingsPagination
-            total={listings.total}
-            page={page}
-            limit={PAGE_LIMIT}
-            setPage={setPage}
-          />
-          <ListingsFilters filter={filter} setFilter={setFilter} />
+          <div>
+            <ListingsPagination
+              total={listings.total}
+              page={page}
+              limit={PAGE_LIMIT}
+              setPage={setPage}
+            />
+            <ListingsFilters filter={filter} setFilter={setFilter} />
+          </div>
         </Affix>
         <List
           grid={{
@@ -77,7 +79,7 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
             </List.Item>
           )}
         />
-      </>
+      </div>
     ) : (
       <div>
         <Paragraph>
