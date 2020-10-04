@@ -1,5 +1,5 @@
 import { Input, Layout } from "antd";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 
 import { Viewer } from "../../lib/types";
@@ -16,7 +16,24 @@ const { Header } = Layout;
 const { Search } = Input;
 
 export const AppHeader = withRouter(
-  ({ viewer, setViewer, history }: Props & RouteComponentProps) => {
+  ({ viewer, setViewer, location, history }: Props & RouteComponentProps) => {
+    const [search, setSearch] = useState("");
+
+    useEffect(() => {
+      const { pathname } = location;
+      const pathnameSubStrings = pathname.split("/"); // localhost:3000/listings/toronto
+
+      if (!pathname.includes("/listings")) {
+        setSearch("");
+        return;
+      }
+
+      if (pathname.includes("/listings") && pathnameSubStrings.length === 3) {
+        setSearch(pathnameSubStrings[2]);
+        return;
+      }
+    }, [location]);
+
     const onSearch = (value: string) => {
       const trimmedValue = value.trim();
 
@@ -39,6 +56,8 @@ export const AppHeader = withRouter(
             <Search
               placeholder="Search 'San Francisco'"
               enterButton
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               onSearch={onSearch}
             />
           </div>
