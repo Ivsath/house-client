@@ -32,14 +32,21 @@ export const User = ({
   const [listingsPage, setListingsPage] = useState(1);
   const [bookingsPage, setBookingsPage] = useState(1);
 
-  const { data, loading, error } = useQuery<UserData, UserVariables>(USER, {
-    variables: {
-      id: match.params.id,
-      bookingsPage,
-      listingsPage,
-      limit: PAGE_LIMIT,
+  const { data, loading, error, refetch } = useQuery<UserData, UserVariables>(
+    USER,
+    {
+      variables: {
+        id: match.params.id,
+        bookingsPage,
+        listingsPage,
+        limit: PAGE_LIMIT,
+      },
     },
-  });
+  );
+
+  const handleUserRefetch = async () => {
+    await refetch();
+  };
 
   const stripeError = new URL(window.location.href).searchParams.get(
     "stripe_error",
@@ -96,6 +103,7 @@ export const User = ({
       viewer={viewer}
       viewerIsUser={viewerIsUser}
       setViewer={setViewer}
+      handleUserRefetch={handleUserRefetch}
     />
   ) : null;
 

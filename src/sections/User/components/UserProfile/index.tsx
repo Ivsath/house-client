@@ -17,6 +17,7 @@ interface Props {
   viewer: Viewer;
   viewerIsUser: boolean;
   setViewer: (viewer: Viewer) => void;
+  handleUserRefetch: () => void;
 }
 
 // In the stripe platform settings, add a redirect URI
@@ -28,6 +29,7 @@ export const UserProfile = ({
   viewer,
   viewerIsUser,
   setViewer,
+  handleUserRefetch,
 }: Props) => {
   const [disconnectStripe, { loading }] = useMutation<DisconnectStripeData>(
     DISCONNECT_STRIPE,
@@ -39,6 +41,7 @@ export const UserProfile = ({
             "You've successfully disconnected from Stripe!",
             "You'll have to reconnect with Stripe to continue to create listings.",
           );
+          handleUserRefetch();
         }
       },
       onError: () => {
