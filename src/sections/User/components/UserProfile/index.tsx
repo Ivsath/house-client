@@ -8,6 +8,7 @@ interface Props {
   viewerIsUser: boolean;
 }
 
+// In the stripe platform settings, add a redirect URI
 const stripeAuthUrl = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${process.env.REACT_APP_S_CLIENT_ID}&scope=read_write`;
 const { Paragraph, Text, Title } = Typography;
 
