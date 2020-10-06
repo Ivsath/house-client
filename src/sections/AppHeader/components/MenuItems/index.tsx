@@ -28,7 +28,7 @@ export const MenuItems = ({ viewer, setViewer }: Props) => {
         displaySuccessNotification("You've successfully logged out!");
       }
     },
-    onError: (_data) => {
+    onError: () => {
       displayErrorMessage(
         "Sorry! We weren't able to log you out. Please try again later!",
       );

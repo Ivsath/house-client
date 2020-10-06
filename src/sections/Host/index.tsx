@@ -69,7 +69,7 @@ const beforeImageUpload = (file: File) => {
 
 // https://stackoverflow.com/questions/51514757/action-function-is-required-with-antd-upload-control-but-i-dont-need-it
 // eslint-disable-next-line
-const dummyRequest = ({ _file, onSuccess }: any) => {
+const dummyRequest = ({ onSuccess }: any) => {
   setTimeout(() => {
     onSuccess("ok");
   }, 0);
@@ -121,6 +121,7 @@ export const Host = ({ viewer }: Props) => {
     }
   };
 
+  // eslint-disable-next-line
   const onFinish = (values: any) => {
     const fullAddress = `${values.address}, ${values.city}, ${values.state}, ${values.postalCode}`;
     const input = {
