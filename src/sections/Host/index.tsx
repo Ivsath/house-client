@@ -4,6 +4,7 @@ import {
   LoadingOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
+import { useMutation } from "@apollo/client";
 import {
   Button,
   Form,
@@ -14,13 +15,23 @@ import {
   Typography,
   Upload,
 } from "antd";
+import { InternalNamePath } from "antd/lib/form/interface";
 import { UploadChangeParam } from "antd/lib/upload";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 import { ListingType } from "../../lib/graphql/globalTypes";
+import { HOST_LISTING } from "../../lib/graphql/mutations";
+import {
+  HostListing as HostListingData,
+  HostListingVariables,
+} from "../../lib/graphql/mutations/HostListing/__generated__/HostListing";
 import { Viewer } from "../../lib/types";
-import { displayErrorMessage, iconColor } from "../../lib/utils";
+import {
+  displayErrorMessage,
+  displaySuccessNotification,
+  iconColor,
+} from "../../lib/utils";
 
 interface Props {
   viewer: Viewer;
@@ -68,6 +79,19 @@ export const Host = ({ viewer }: Props) => {
   const [form] = useForm();
   const [imageLoading, setImageLoading] = useState(false);
   const [imageBase64Value, setImageBase64Value] = useState<string | null>(null);
+  const [hostListing, { loading, data }] = useMutation<
+    HostListingData,
+    HostListingVariables
+  >(HOST_LISTING, {
+    onCompleted: () => {
+      displaySuccessNotification("You've successfully created your listing!");
+    },
+    onError: () => {
+      displayErrorMessage(
+        "Sorry! We weren't able to create your listing. Please try again later.",
+      );
+    },
+  });
 
   const handleImageUpload = (info: UploadChangeParam) => {
     const { file } = info;
@@ -84,6 +108,32 @@ export const Host = ({ viewer }: Props) => {
         setImageLoading(false);
       });
     }
+  };
+
+  const onFinishFailed = ({
+    errorFields,
+  }: {
+    errorFields: { name: InternalNamePath; errors: Array<string> }[];
+  }) => {
+    if (errorFields) {
+      displayErrorMessage("Please complete all required form fields!");
+      return;
+    }
+  };
+
+  const onFinish = (values: any) => {
+    const fullAddress = `${values.address}, ${values.city}, ${values.state}, ${values.postalCode}`;
+    const input = {
+      ...values,
+      address: fullAddress,
+      image: imageBase64Value,
+      price: values.price * 100,
+    };
+    delete input.city;
+    delete input.state;
+    delete input.postalCode;
+
+    hostListing({ variables: { input } });
   };
 
   if (!viewer.id || !viewer.hasWallet) {
@@ -105,9 +155,30 @@ export const Host = ({ viewer }: Props) => {
     );
   }
 
+  if (loading) {
+    return (
+      <Content className="host-content">
+        <div className="host__form-header">
+          <Title level={3} className="host__form-title">
+            Please wait!
+          </Title>
+          <Text type="secondary">We're creating your listing now.</Text>
+        </div>
+      </Content>
+    );
+  }
+
+  if (data && data.hostListing) {
+    return <Redirect to={`/listing/${data.hostListing.id}`} />;
+  }
+
   return (
     <Content className="host-content">
-      <Form layout="vertical" form={form}>
+      <Form
+        layout="vertical"
+        form={form}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}>
         <div className="host__form-header">
           <Title level={3} className="host__form-title">
             Hi! Let's get started listing your place.
@@ -270,7 +341,9 @@ export const Host = ({ viewer }: Props) => {
         </Item>
 
         <Item>
-          <Button type="primary">Submit</Button>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
         </Item>
       </Form>
     </Content>
