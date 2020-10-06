@@ -57,6 +57,7 @@ const beforeImageUpload = (file: File) => {
 };
 
 // https://stackoverflow.com/questions/51514757/action-function-is-required-with-antd-upload-control-but-i-dont-need-it
+// eslint-disable-next-line
 const dummyRequest = ({ _file, onSuccess }: any) => {
   setTimeout(() => {
     onSuccess("ok");
