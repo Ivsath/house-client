@@ -3,14 +3,18 @@ import dayjs, { Dayjs } from "dayjs";
 import React from "react";
 
 import { DatePicker } from "../../../../lib/components/DatePicker";
+import { Listing as ListingData } from "../../../../lib/graphql/queries/Listing/__generated__/Listing";
 import { Viewer } from "../../../../lib/types";
 import { displayErrorMessage, formatListingPrice } from "../../../../lib/utils";
+import { BookingsIndex } from "./types";
 
 const { Paragraph, Title, Text } = Typography;
 
 interface Props {
   viewer: Viewer;
+  host: ListingData["listing"]["host"];
   price: number;
+  bookingsIndex: ListingData["listing"]["bookingsIndex"];
   checkInDate: Dayjs | null;
   checkOutDate: Dayjs | null;
   setCheckInDate: (checkInDate: Dayjs | null) => void;
@@ -19,15 +23,36 @@ interface Props {
 
 export const ListingCreateBooking = ({
   viewer,
+  host,
   price,
+  bookingsIndex,
   checkInDate,
   checkOutDate,
   setCheckInDate,
   setCheckOutDate,
 }: Props) => {
-  const disabledDate = (currentDate: Dayjs) => {
-    const dateIsBeforeEndOfDay = currentDate.isBefore(dayjs().endOf("day"));
-    return dateIsBeforeEndOfDay;
+  const bookingsIndexJSON: BookingsIndex = JSON.parse(bookingsIndex);
+
+  const dateIsBooked = (currentDate: Dayjs) => {
+    const year = dayjs(currentDate).year();
+    const month = dayjs(currentDate).month();
+    const day = dayjs(currentDate).date();
+
+    if (bookingsIndexJSON[year] && bookingsIndexJSON[year][month]) {
+      return Boolean(bookingsIndexJSON[year][month][day]);
+    } else {
+      return false;
+    }
+  };
+
+  const disabledDate = (currentDate?: Dayjs) => {
+    if (currentDate) {
+      const dateIsBeforeEndOfDay = currentDate.isBefore(dayjs().endOf("day"));
+
+      return dateIsBeforeEndOfDay || dateIsBooked(currentDate);
+    } else {
+      return false;
+    }
   };
 
   const verifyAndSetCheckOutDate = (selectedCheckOutDate: Dayjs | null) => {
@@ -37,12 +62,33 @@ export const ListingCreateBooking = ({
           `You can't book date of check out to be prior to check in!`,
         );
       }
+
+      let dateCursor = checkInDate;
+
+      while (dayjs(dateCursor).isBefore(selectedCheckOutDate, "day")) {
+        dateCursor = dayjs(dateCursor).add(1, "day");
+
+        const year = dayjs(dateCursor).year();
+        const month = dayjs(dateCursor).month();
+        const day = dayjs(dateCursor).date();
+
+        if (
+          bookingsIndexJSON[year] &&
+          bookingsIndexJSON[year][month] &&
+          bookingsIndexJSON[year][month][day]
+        ) {
+          return displayErrorMessage(
+            "You can't book a period of time that overlaps existing bookings. Please try again!",
+          );
+        }
+      }
     }
 
     setCheckOutDate(selectedCheckOutDate);
   };
 
-  const checkInInputDisabled = !viewer.id;
+  const viewerIsHost = viewer.id === host.id;
+  const checkInInputDisabled = !viewer.id || viewerIsHost || !host.hasWallet;
   const checkOutInputDisabled = checkInInputDisabled || !checkInDate;
   const buttonDisabled = checkOutInputDisabled || !checkInDate || !checkOutDate;
 
@@ -50,6 +96,11 @@ export const ListingCreateBooking = ({
 
   if (!viewer.id) {
     buttonMessage = "You have to be signed in to book a listing!";
+  } else if (viewerIsHost) {
+    buttonMessage = "You can't book your own listing";
+  } else if (!host.hasWallet) {
+    buttonMessage =
+      "The host has disconnected from Stripe and thus won't be able to receive payments.";
   }
 
   return (

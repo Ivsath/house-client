@@ -83,7 +83,9 @@ export const Listing = ({
   const listingCreateBooking = listing ? (
     <ListingCreateBooking
       viewer={viewer}
+      host={listing.host}
       price={listing.price}
+      bookingsIndex={listing.bookingsIndex}
       checkInDate={checkInDate}
       checkOutDate={checkOutDate}
       setCheckInDate={setCheckInDate}
