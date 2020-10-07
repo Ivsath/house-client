@@ -3,11 +3,13 @@ import dayjs, { Dayjs } from "dayjs";
 import React from "react";
 
 import { DatePicker } from "../../../../lib/components/DatePicker";
+import { Viewer } from "../../../../lib/types";
 import { displayErrorMessage, formatListingPrice } from "../../../../lib/utils";
 
-const { Paragraph, Title } = Typography;
+const { Paragraph, Title, Text } = Typography;
 
 interface Props {
+  viewer: Viewer;
   price: number;
   checkInDate: Dayjs | null;
   checkOutDate: Dayjs | null;
@@ -16,6 +18,7 @@ interface Props {
 }
 
 export const ListingCreateBooking = ({
+  viewer,
   price,
   checkInDate,
   checkOutDate,
@@ -39,8 +42,15 @@ export const ListingCreateBooking = ({
     setCheckOutDate(selectedCheckOutDate);
   };
 
-  const checkOutInputDisabled = !checkInDate;
-  const buttonDisabled = !checkInDate || !checkOutDate;
+  const checkInInputDisabled = !viewer.id;
+  const checkOutInputDisabled = checkInInputDisabled || !checkInDate;
+  const buttonDisabled = checkOutInputDisabled || !checkInDate || !checkOutDate;
+
+  let buttonMessage = "You won't be charged yet";
+
+  if (!viewer.id) {
+    buttonMessage = "You have to be signed in to book a listing!";
+  }
 
   return (
     <div className="listing-booking">
@@ -59,6 +69,7 @@ export const ListingCreateBooking = ({
               value={checkInDate ? checkInDate : null}
               format={"YYYY/MM/DD"}
               showToday={false}
+              disabled={checkInInputDisabled}
               disabledDate={disabledDate}
               onChange={(dateValue) => setCheckInDate(dateValue)}
               onOpenChange={() => setCheckOutDate(null)}
@@ -84,6 +95,9 @@ export const ListingCreateBooking = ({
           className="listing-booking__card-cta">
           Request to book!
         </Button>
+        <Text type="secondary" mark>
+          {buttonMessage}
+        </Text>
       </Card>
     </div>
   );
