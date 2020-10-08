@@ -54,11 +54,10 @@ export const ListingCreateBookingModal = ({
       );
       handleListingRefetch();
     },
-    onError: (err) => {
+    onError: () => {
       displayErrorMessage(
         "Sorry! We weren't able to successfully book the listing. Please try again later!",
       );
-      console.log(err);
     },
   });
 
