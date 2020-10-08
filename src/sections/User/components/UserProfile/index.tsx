@@ -17,7 +17,7 @@ interface Props {
   viewer: Viewer;
   viewerIsUser: boolean;
   setViewer: (viewer: Viewer) => void;
-  handleUserRefetch: () => void;
+  handleUserRefetch: () => Promise<void>;
 }
 
 // In the stripe platform settings, add a redirect URI
