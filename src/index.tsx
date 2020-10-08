@@ -8,6 +8,8 @@ import {
 } from "@apollo/client";
 import { useMutation } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import { Affix, Layout, Spin } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
@@ -58,6 +60,10 @@ const initialViewer: Viewer = {
   hasWallet: null,
   didRequest: false,
 };
+
+const stripePromise = loadStripe(
+  process.env.REACT_APP_S_PUBLISHABLE_KEY as string,
+);
 
 const App = () => {
   const [viewer, setViewer] = useState<Viewer>(initialViewer);
@@ -112,7 +118,11 @@ const App = () => {
           <Route
             exact
             path="/listing/:id"
-            render={(props) => <Listing {...props} viewer={viewer} />}
+            render={(props) => (
+              <Elements stripe={stripePromise}>
+                <Listing {...props} viewer={viewer} />
+              </Elements>
+            )}
           />
           <Route exact path="/listings/:location?" component={Listings} />
           <Route

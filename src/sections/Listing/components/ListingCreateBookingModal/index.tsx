@@ -1,4 +1,6 @@
 import { KeyOutlined } from "@ant-design/icons";
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { StripeCardElement } from "@stripe/stripe-js";
 import { Button, Divider, Modal, Typography } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import React from "react";
@@ -22,8 +24,25 @@ export const ListingCreateBookingModal = ({
   checkOutDate,
   setModalVisible,
 }: Props) => {
+  const stripe = useStripe();
+  const elements = useElements();
+
   const daysBooked = checkOutDate.diff(checkInDate, "day") + 1;
   const listingPrice = price * daysBooked;
+
+  const handleCreateBooking = async () => {
+    if (!stripe || !elements) {
+      // Stripe.js has not loaded yet. Make sure to disable
+      // form submission until Stripe.js has loaded.
+      return;
+    }
+
+    const cardElement = elements.getElement(CardElement);
+    const { token: stripeToken, error } = await stripe.createToken(
+      cardElement as StripeCardElement,
+    );
+    console.log(stripeToken);
+  };
 
   return (
     <Modal
@@ -68,10 +87,15 @@ export const ListingCreateBookingModal = ({
         <Divider />
 
         <div className="listing-booking-modal__stripe-card-section">
+          <CardElement
+            options={{ hidePostalCode: true }}
+            className="listing-booking-modal__stripe-card"
+          />
           <Button
             size="large"
             type="primary"
-            className="listing-booking-modal__cta">
+            className="listing-booking-modal__cta"
+            onClick={handleCreateBooking}>
             Book
           </Button>
         </div>
