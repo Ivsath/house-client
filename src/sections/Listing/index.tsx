@@ -14,6 +14,7 @@ import { Viewer } from "../../lib/types";
 import {
   ListingBookings,
   ListingCreateBooking,
+  ListingCreateBookingModal,
   ListingDetails,
 } from "./components";
 
@@ -35,6 +36,7 @@ export const Listing = ({
   const [bookingsPage, setBookingsPage] = useState(1);
   const [checkInDate, setCheckInDate] = useState<Dayjs | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Dayjs | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const { loading, data, error } = useQuery<ListingData, ListingVariables>(
     LISTING,
@@ -80,7 +82,7 @@ export const Listing = ({
     />
   ) : null;
 
-  const listingCreateBooking = listing ? (
+  const listingCreateBookingElement = listing ? (
     <ListingCreateBooking
       viewer={viewer}
       host={listing.host}
@@ -90,8 +92,16 @@ export const Listing = ({
       checkOutDate={checkOutDate}
       setCheckInDate={setCheckInDate}
       setCheckOutDate={setCheckOutDate}
+      setModalVisible={setModalVisible}
     />
   ) : null;
+
+  const listingCreateBookingModalElement = (
+    <ListingCreateBookingModal
+      modalVisible={modalVisible}
+      setModalVisible={setModalVisible}
+    />
+  );
 
   return (
     <Content className="listings">
@@ -101,9 +111,10 @@ export const Listing = ({
           {listingBookingsElement}
         </Col>
         <Col xs={24} lg={10} xl={10} xxl={10}>
-          {listingCreateBooking}
+          {listingCreateBookingElement}
         </Col>
       </Row>
+      {listingCreateBookingModalElement}
     </Content>
   );
 };
