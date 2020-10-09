@@ -1,7 +1,7 @@
 import { useMutation } from "@apollo/client";
 import { Layout, Spin } from "antd";
 import React, { useEffect, useRef } from "react";
-import { Redirect, RouteComponentProps } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 
 import { CONNECT_STRIPE } from "../../lib/graphql/mutations";
 import {
@@ -18,11 +18,7 @@ interface Props {
 
 const { Content } = Layout;
 
-export const Stripe = ({
-  viewer,
-  setViewer,
-  history,
-}: Props & RouteComponentProps) => {
+export const Stripe = ({ viewer, setViewer }: Props) => {
   const [connectStripe, { data, loading, error }] = useMutation<
     ConnectStripeData,
     ConnectStripeVariables
@@ -38,6 +34,7 @@ export const Stripe = ({
     },
   });
   const connectStripeRef = useRef(connectStripe);
+  const history = useHistory();
 
   useEffect(() => {
     const code = new URL(window.location.href).searchParams.get("code");
