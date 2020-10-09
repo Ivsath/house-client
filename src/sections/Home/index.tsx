@@ -9,6 +9,7 @@ import {
   Listings as ListingsData,
   ListingsVariables,
 } from "../../lib/graphql/queries/Listings/__generated__/Listings";
+import { useScrollToTop } from "../../lib/hooks";
 import { displayErrorMessage } from "../../lib/utils";
 import cancunImage from "./assets/cancun.jpg";
 import mapBackground from "./assets/map-background.jpg";
@@ -33,6 +34,8 @@ export const Home = ({ history }: RouteComponentProps) => {
       fetchPolicy: "cache-and-network",
     },
   );
+
+  useScrollToTop();
 
   const onSearch = (value: string) => {
     const trimmedValue = value.trim();
